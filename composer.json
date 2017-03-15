@@ -14,8 +14,9 @@
   ],
   "minimum-stability": "dev",
   "require": {
-    "php": ">=5.6",
-    "pimcore/core-version": "4.4.3"
+    "php": ">=7.0",
+    "pimcore/core-version": "4.4.3",
+    "zendframework/zendframework1": "^1.12"
   },
   "autoload": {
     "psr-4": {"Bolser\\Pimcore\\": "src/"}
