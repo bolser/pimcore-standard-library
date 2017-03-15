@@ -96,7 +96,7 @@ abstract class AbstractEmailService
      *
      * @return Mail
      */
-    protected function sendHtml(): Mail
+    public function sendHtml(): Mail
     {
         $this->init();
 
@@ -110,7 +110,7 @@ abstract class AbstractEmailService
      *
      * @return Mail
      */
-    protected function sendHtmlWithAttachment(SplFileInfo $attachedFile = null): Mail
+    public function sendHtmlWithAttachment(SplFileInfo $attachedFile = null): Mail
     {
         if (!file_exists($attachedFile->getRealPath()) || is_null($attachedFile)) {
             Logger::error('Attachment file does not exist. Sending mail without an attachment');
