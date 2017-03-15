@@ -65,18 +65,18 @@ abstract class AbstractEmailService
     /**
      * AbstractEmailService constructor.
      *
-     * @param Mail        $mail
-     * @param ViewFactory $viewFactory
-     * @param string      $renderView
-     * @param string      $sendTo
-     * @param string      $replyTo
-     * @param string      $subject
-     * @param array       $carbonCopy
+     * @param Mail        $mail          The Mail System
+     * @param ViewFactory $viewFactory   The ViewFactory used to render a html email template
+     * @param string      $emailTemplate The email template
+     * @param string      $sendTo        Who to send the email to
+     * @param string      $replyTo       Who the email is coming from
+     * @param string      $subject       The subject line of the email
+     * @param array       $carbonCopy    Who to send a CC of the email
      */
     public function __construct(
         Mail $mail,
         ViewFactory $viewFactory,
-        string $renderView,
+        string $emailTemplate,
         string $sendTo,
         string $replyTo,
         string $subject,
@@ -133,7 +133,7 @@ abstract class AbstractEmailService
     /**
      * Initialise the email settings by adding the recipient, sender and body to the mail object
      *
-     * @return mixed
+     * @return void
      */
-    abstract protected function init();
+    abstract protected function init(): void;
 }
