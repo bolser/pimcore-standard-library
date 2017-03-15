@@ -1,0 +1,23 @@
+{
+  "name": "bolser/pimcore-standard-library",
+  "type": "library",
+  "description": "Bolser Pimcore Library",
+  "keywords": ["bolser", "pimcore"],
+  "homepage": "https://github.com/bolser/pimcore-standard-library",
+  "license": "GPL-3.0",
+  "authors": [
+    {
+      "name": "Matt Booth",
+      "email": "mattbooth@bolser.co.uk",
+      "role": "Developer"
+    }
+  ],
+  "minimum-stability": "dev",
+  "require": {
+    "php": ">=5.6",
+    "pimcore/core-version": "4.4.3"
+  },
+  "autoload": {
+    "psr-4": {"Bolser\\Pimcore\\": "src/"}
+  }
+}
