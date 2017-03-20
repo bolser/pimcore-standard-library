@@ -13,8 +13,17 @@
 
 namespace Bolser\Pimcore\Service\File;
 
+use Bolser\Pimcore\Exception\InvalidAssetTypeException;
+use Bolser\Pimcore\Util\HttpResponseCode;
+use Exception;
 use Pimcore\File;
 use Pimcore\Logger;
+use Pimcore\Model\Asset;
+use Pimcore\Model\Asset\Archive;
+use Pimcore\Model\Asset\Audio;
+use Pimcore\Model\Asset\Document;
+use Pimcore\Model\Asset\Image;
+use Pimcore\Model\Asset\Video;
 use Zend_Controller_Action_Exception;
 use Zend_File_Transfer_Adapter_Http;
 use Zend_File_Transfer_Exception;
@@ -113,16 +122,20 @@ abstract class AbstractFileService
     /**
      * Downloads a given file in the user's browser
      *
-     * @param Zend_Controller_Response_Http $response
-     * @param SplFileInfo                   $file
+     * @param Zend_Controller_Response_Http $response Zend response object for directing the user's browser
+     * @param SplFileInfo                   $file     The file to download
      *
-     * @throws Zend_Controller_Action_Exception  Chosen file was not found
+     * @throws Zend_Controller_Action_Exception  thrown when chosen file was not found
      */
-    public function download(Zend_Controller_Response_Http $response, SplFileInfo $file): void
+    public function downloadFile(Zend_Controller_Response_Http $response, SplFileInfo $file): void
     {
+        // Full path to the file
         $fullPath = $file->getRealPath();
+
+        // The filename
         $filename = $file->getFilename();
 
+        // Sanity check to make sure the file we're trying to download exists on the system
         if (file_exists($fullPath)) {
             $response
                 ->setHeader('Content-Description', 'File Transfer', true)
@@ -136,7 +149,103 @@ abstract class AbstractFileService
 
             $response->setBody(file_get_contents($fullPath));
         } else {
-            throw new Zend_Controller_Action_Exception('File not found', 404);
+            $message = sprintf('File with filename: "%s" not found', $filename);
+            throw new Zend_Controller_Action_Exception($message, HttpResponseCode::HTTP_NOT_FOUND);
         }
     }
+
+    /**
+     * Downloads a given Asset file in the user's browser
+     *
+     * @param Zend_Controller_Response_Http $response Zend response object for directing the user's browser
+     * @param Asset                         $file     The asset to download
+     */
+    public function downloadAssetFile(Zend_Controller_Response_Http $response, Asset $file): void
+    {
+        $this->downloadFile($response, new SplFileInfo($file->getRealPath()));
+    }
+
+    /**
+     * Create an Asset type from a file.
+     *
+     * Optional: Add a folder name to place the asset in a folder. This will be created if it does not already exist
+     *
+     * @param SplFileInfo $file       The file to create
+     * @param string      $type       The type of file to create
+     * @param string      $folderName Optional foldername to place the asset inside
+     *
+     * @return Asset The created asset
+     * @throws Exception Thrown if an incorrect type is given
+     */
+    public function createAssetFromFile(SplFileInfo $file, string $type, string $folderName = ""): Asset
+    {
+        // Data required to create the asset
+        $data = [
+            'fileName'         => $file->getFilename(),
+            'data'             => file_get_contents($file->getRealPath()),
+            'userOwner'        => 1,
+            'userModification' => 1,
+        ];
+
+        // Instantiate the folder variable
+        $folder = null;
+
+        // Create or get a folder if name is provided
+        if (!empty($folderName)) {
+            // Attempt to get a folder asset by name
+            // Returns null if folder asset doesn't exist
+            $folder = Asset::getByPath(PIMCORE_ASSET_DIRECTORY . DIRECTORY_SEPARATOR . $folderName);
+
+            // If there is no folder with the provided name, create one
+            if (is_null($folder)) {
+                $folder = Asset::create(1, // Base parent ID of 1
+                    [
+                        'fileName'         => $folderName,
+                        'type'             => 'folder',
+                        'userOwner'        => 1,
+                        'userModification' => 1,
+                    ]);
+
+                $folder->save();
+            }
+        }
+
+        // Set the parent ID to either 1 or the folder ID if available
+        $parentId = is_null($folder) ? 1 : $folder->getId();
+
+        // Create the appropriate type
+        switch ($type) {
+            case FileType::FILE_TYPE_ARCHIVE:
+                $document = Archive::create($parentId, $data);
+                break;
+            case FileType::FILE_TYPE_AUDIO:
+                $document = Audio::create($parentId, $data);
+                break;
+            case FileType::FILE_TYPE_DOCUMENT:
+                $document = Document::create($parentId, $data);
+                break;
+            case FileType::FILE_TYPE_IMAGE:
+                $document = Image::create($parentId, $data);
+                break;
+            case FileType::FILE_TYPE_VIDEO:
+                $document = Video::create($parentId, $data);
+                break;
+            default:
+                $message = sprintf('The asset type: "%s" is not valid', $type);
+                throw new InvalidAssetTypeException($message, HttpResponseCode::HTTP_BAD_REQUEST);
+                break;
+        }
+
+        // Save the new asset and return it
+        return $document->save();
+    }
+}
+
+class FileType
+{
+    const FILE_TYPE_ARCHIVE = "archive";
+    const FILE_TYPE_AUDIO = "audio";
+    const FILE_TYPE_DOCUMENT = "document";
+    const FILE_TYPE_IMAGE = "image";
+    const FILE_TYPE_VIDEO = "video";
 }

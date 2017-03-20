@@ -107,7 +107,7 @@ class ImageOptimiseService
         if (!array_key_exists('ignore_errors', $options)) {
             $options['ignore_errors'] = false;
         }
-        
+
         return $options;
     }
 }
