@@ -24,11 +24,11 @@ use Pimcore\Model\Asset\Audio;
 use Pimcore\Model\Asset\Document;
 use Pimcore\Model\Asset\Image;
 use Pimcore\Model\Asset\Video;
+use SplFileInfo;
 use Zend_Controller_Action_Exception;
+use Zend_Controller_Response_Http;
 use Zend_File_Transfer_Adapter_Http;
 use Zend_File_Transfer_Exception;
-use Zend_Controller_Response_Http;
-use SplFileInfo;
 
 /**
  * Class AbstractFileService
