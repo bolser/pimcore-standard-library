@@ -53,7 +53,12 @@ abstract class AbstractRepository
      */
     public function getById(int $id)
     {
-        return current($this->setCondition('oo_id', $id)->setLimit(1)->load());
+        return current(
+            $this
+                ->setCondition('oo_id', $id)
+                ->setLimit(1)
+                ->load()
+        );
     }
 
     /**
@@ -65,9 +70,13 @@ abstract class AbstractRepository
      */
     public function getByKey($key)
     {
-        return $this->model->setCondition("o_key = ?", $key)
-            ->setLimit(1)
-            ->load();
+        return current(
+            $this
+                ->model
+                ->setCondition("o_key = ?", $key)
+                ->setLimit(1)
+                ->load()
+        );
     }
 
     /**
