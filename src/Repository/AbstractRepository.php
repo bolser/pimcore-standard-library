@@ -40,8 +40,11 @@ abstract class AbstractRepository
      */
     public function getAll(string $orderKey = 'name', string $order = 'asc')
     {
-        return $this->setOrderKey($orderKey)
-            ->setOrder($order)->load();
+        return $this
+            ->setCondition('o_published', true)
+            ->setOrderKey($orderKey)
+            ->setOrder($order)
+            ->load();
     }
 
     /**
@@ -55,6 +58,7 @@ abstract class AbstractRepository
     {
         return current(
             $this
+                ->setCondition('o_published', true)
                 ->setCondition('oo_id', $id)
                 ->setLimit(1)
                 ->load()
@@ -73,6 +77,7 @@ abstract class AbstractRepository
         return current(
             $this
                 ->model
+                ->setCondition('o_published', true)
                 ->setCondition("o_key = ?", $key)
                 ->setLimit(1)
                 ->load()
