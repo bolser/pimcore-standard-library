@@ -89,13 +89,13 @@ abstract class AbstractRepository
      *
      * @param $order
      *
-     * @return Listing
+     * @return AbstractRepository
      */
     public function setOrder($order)
     {
         $this->model->setOrder($order);
 
-        return $this->model;
+        return $this;
     }
 
     /**
@@ -103,13 +103,13 @@ abstract class AbstractRepository
      *
      * @param $orderKey
      *
-     * @return Listing
+     * @return AbstractRepository
      */
     public function setOrderKey($orderKey)
     {
         $this->model->setOrderKey($orderKey);
 
-        return $this->model;
+        return $this;
     }
 
     /**
@@ -117,13 +117,13 @@ abstract class AbstractRepository
      *
      * @param $limit
      *
-     * @return Listing
+     * @return AbstractRepository
      */
     public function setLimit($limit)
     {
         $this->model->setLimit($limit);
 
-        return $this->model;
+        return $this;
     }
 
     /**
@@ -132,13 +132,13 @@ abstract class AbstractRepository
      * @param $key
      * @param $value
      *
-     * @return Listing
+     * @return AbstractRepository
      */
     public function setCondition($key, $value)
     {
         $this->model->setCondition("$key = ?", $value);
 
-        return $this->model;
+        return $this;
     }
 
     /**
@@ -147,13 +147,13 @@ abstract class AbstractRepository
      * @param $key
      * @param $value
      *
-     * @return Listing
+     * @return AbstractRepository
      */
     public function setConditions($key, $value)
     {
         $this->model->setCondition($key, $value);
 
-        return $this->model;
+        return $this;
     }
 
     /**
