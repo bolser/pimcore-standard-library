@@ -105,7 +105,13 @@ abstract class AbstractRepository
             return [];
         }
 
-        return $this->transform($input);
+        $output = [];
+
+        foreach ($input as $item) {
+            $output[] = call_user_func($this->getClassDefinition() . '::getById', intval($item['oo_id']));
+        }
+
+        return $output;
     }
 
     /**
@@ -125,25 +131,7 @@ abstract class AbstractRepository
             return [];
         }
 
-        return $this->transform($input);
-    }
-
-    /**
-     * Transforms the results into an array of models
-     *
-     * @param array $input
-     *
-     * @return array
-     */
-    public function transform(array $input): array
-    {
-        $output = [];
-
-        foreach ($input as $item) {
-            $output[] = call_user_func($this->getClassDefinition() . '::getById', $item['oo_id']);
-        }
-
-        return $output;
+        return call_user_func($this->getClassDefinition() . '::getById', intval($input['oo_id']));
     }
 
     /**
