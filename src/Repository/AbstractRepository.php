@@ -13,166 +13,150 @@
 
 namespace Bolser\Pimcore\Repository;
 
-use Pimcore\Model\Object\Listing;
+use Pimcore\Model\Object\Concrete;
 
 abstract class AbstractRepository
 {
     /**
-     * @var Listing $model
+     * @var Concrete $model
      */
     protected $model;
+    protected $tableName;
+    protected $dao;
 
     /**
-     * Return all results
+     * AbstractRepository constructor.
+     *
+     * @param Concrete $model
      */
-    public function all()
+    public function __construct($model)
     {
-        return $this->model->load();
+        $this->model = $model;
+        $this->tableName = "object_" . $model->getClassId();
+        $this->dao = $model->getDao();
     }
 
     /**
-     * Get all objects and order them
+     * Gets a model by it's ID
      *
-     * @param string $orderKey The key to order the results upon
-     * @param string $order    The order to show the results E.G. asc or desc
-     *
-     * @return mixed
-     */
-    public function getAll(string $orderKey = 'name', string $order = 'asc')
-    {
-        return $this
-            ->setCondition('o_published', true)
-            ->setOrderKey($orderKey)
-            ->setOrder($order)
-            ->load();
-    }
-
-    /**
-     * Gets a single object by it's ID
-     *
-     * @param int $id
+     * @param int $id The ID to find
      *
      * @return mixed
      */
     public function getById(int $id)
     {
-        return current(
-            $this
-                ->setCondition('o_published', true)
-                ->setCondition('oo_id', $id)
-                ->setLimit(1)
-                ->load()
-        );
+        $query = $this->dao->db->select()
+            ->from($this->tableName)
+            ->where('oo_id = ?', $id)
+            ->where('o_published = 1');
+
+        return $this->transformSingular($this->dao->db->fetchRow($query));
     }
 
     /**
-     * Gets a single object by it's key
+     * Gets a model by it's key
      *
-     * @param $key
+     * @param string $key The key to find
      *
      * @return mixed
      */
-    public function getByKey($key)
+    public function getByKey(string $key)
     {
-        return current(
-            $this
-                ->model
-                ->setCondition('o_published', true)
-                ->setCondition("o_key = ?", $key)
-                ->setLimit(1)
-                ->load()
-        );
+        $query = $this->dao->db->select()
+            ->from($this->tableName)
+            ->where('o_key = ?', $key)
+            ->where('o_published = ?', 1);
+
+        return $this->transformSingular($this->dao->db->fetchRow($query));
     }
 
     /**
-     * Set results order
+     * Gets all entries for a model, optional ordering available
      *
-     * @param $order
+     * @param string $orderKey The field to order the results on
+     * @param string $order    The method of ordering
      *
-     * @return AbstractRepository
+     * @return array
      */
-    public function setOrder($order)
+    public function getAll(string $orderKey = 'name', string $order = 'asc')
     {
-        $this->model->setOrder($order);
+        $query = $this->dao->db->select()
+            ->from($this->tableName)
+            ->order([$orderKey . ' ' . $order])
+            ->where('o_published = ?', 1);
 
-        return $this;
+        return $this->transformMultiple($this->dao->db->fetchAll($query));
     }
 
     /**
-     * Set order by key
+     * Transforms a two dimensional array into an array of models
      *
-     * @param $orderKey
+     * @param array $input
      *
-     * @return AbstractRepository
+     * @return array
      */
-    public function setOrderKey($orderKey)
+    protected function transformMultiple(array $input): array
     {
-        $this->model->setOrderKey($orderKey);
+        if (empty($input)) {
+            return [];
+        }
 
-        return $this;
+        if (!array_key_exists('oo_id', $input[0])) {
+            return [];
+        }
+
+        return $this->transform($input);
     }
 
     /**
-     * Set the limit for the returned values
+     * Transforms a one dimensional array into an array of models
      *
-     * @param $limit
+     * @param array $input
      *
-     * @return AbstractRepository
+     * @return array
      */
-    public function setLimit($limit)
+    protected function transformSingular(array $input)
     {
-        $this->model->setLimit($limit);
+        if (empty($input)) {
+            return [];
+        }
 
-        return $this;
+        if (!array_key_exists('oo_id', $input)) {
+            return [];
+        }
+
+        return $this->transform($input);
     }
 
     /**
-     * Select via a condition
+     * Transforms the results into an array of models
      *
-     * @param $key
-     * @param $value
+     * @param array $input
      *
-     * @return AbstractRepository
+     * @return array
      */
-    public function setCondition($key, $value)
+    public function transform(array $input): array
     {
-        $this->model->setCondition("$key = ?", $value);
+        $output = [];
 
-        return $this;
+        foreach ($input as $item) {
+            $output[] = call_user_func($this->getClassDefinition() . '::getById', $item['oo_id']);
+        }
+
+        return $output;
     }
 
     /**
-     * Select via multiple conditions
+     * Gets the log name for this repository
      *
-     * @param $key
-     * @param $value
-     *
-     * @return AbstractRepository
+     * @return string The log name
      */
-    public function setConditions($key, $value)
-    {
-        $this->model->setCondition($key, $value);
-
-        return $this;
-    }
+    abstract function getLogName(): string;
 
     /**
-     * Load the list
+     * Gets the class definition of the class using the repository
      *
-     * @return mixed
+     * @return string
      */
-    public function load()
-    {
-        return $this->model->load();
-    }
-
-    /**
-     * Gets a total count of all the models in the listing
-     *
-     * @return int
-     */
-    public function getTotalCount(): int
-    {
-        return $this->model->getTotalCount();
-    }
+    abstract function getClassDefinition(): string;
 }
