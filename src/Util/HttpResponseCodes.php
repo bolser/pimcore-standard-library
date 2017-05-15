@@ -1,7 +1,7 @@
 <?php
 
 /**
- * ImageOptimiseService
+ * HttpResponseCode
  *
  * This source file is subject to the GNU General Public License version 3 (GPLv3)
  * For the full copyright and license information, please view the LICENSE.md
@@ -16,7 +16,12 @@
 
 namespace Bolser\Pimcore\Util;
 
-class HttpResponseCode
+/**
+ * Interface HttpResponseCode
+ *
+ * @package Bolser\Pimcore\Util
+ */
+interface HttpResponseCode
 {
     const HTTP_CONTINUE = 100;
     const HTTP_SWITCHING_PROTOCOLS = 101;

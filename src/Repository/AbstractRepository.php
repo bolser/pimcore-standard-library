@@ -15,6 +15,11 @@ namespace Bolser\Pimcore\Repository;
 
 use Pimcore\Model\Object\Concrete;
 
+/**
+ * Class AbstractRepository
+ *
+ * @package Bolser\Pimcore\Repository
+ */
 abstract class AbstractRepository
 {
     /**

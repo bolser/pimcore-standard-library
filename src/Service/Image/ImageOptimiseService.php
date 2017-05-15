@@ -26,8 +26,9 @@ class ImageOptimiseService
      * Optimises an image
      *
      * @param string $imagePath
-     * @param array $options (Optional) Options which are detailed above.
-     *                       Some necessary defaults are set if no options are provided
+     * @param array  $options (Optional) Options which are detailed above.
+     *                        Some necessary defaults are set if no options are provided
+     *
      * @return bool
      *
      * ignore_errors (default: true)

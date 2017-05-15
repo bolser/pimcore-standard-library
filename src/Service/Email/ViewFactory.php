@@ -22,6 +22,7 @@ use Zend_View;
  */
 class ViewFactory
 {
+    const EMAIL_PATH = '/views/scripts/emails';
     /**
      * Gets a Zend/View object with the script path set to the views/scripts/emails folder
      *
@@ -30,7 +31,7 @@ class ViewFactory
     public function getView(): Zend_View
     {
         $view = new Zend_View();
-        $view->setScriptPath(PIMCORE_WEBSITE_PATH . '/views/scripts/emails');
+        $view->setScriptPath(PIMCORE_WEBSITE_PATH . self::EMAIL_PATH);
 
         return $view;
     }

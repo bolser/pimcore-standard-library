@@ -1,7 +1,7 @@
 <?php
 
 /**
- * InvalidAssetTypeException
+ * FileType
  *
  * This source file is subject to the GNU General Public License version 3 (GPLv3)
  * For the full copyright and license information, please view the LICENSE.md
@@ -11,16 +11,18 @@
  * @license    GNU General Public License version 3 (GPLv3)
  */
 
-namespace Bolser\Pimcore\Exception;
-
-use Exception;
+namespace Bolser\Pimcore\Service\File;
 
 /**
- * Class InvalidAssetTypeException
+ * Interface FileType
  *
- * @package Bolser\Pimcore\Exception
+ * @package Bolser\Pimcore\Service\File
  */
-class InvalidAssetTypeException extends Exception
+interface FileType
 {
-
+    const FILE_TYPE_ARCHIVE = "archive";
+    const FILE_TYPE_AUDIO = "audio";
+    const FILE_TYPE_DOCUMENT = "document";
+    const FILE_TYPE_IMAGE = "image";
+    const FILE_TYPE_VIDEO = "video";
 }

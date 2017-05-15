@@ -31,7 +31,7 @@ abstract class PageController extends AbstractController
 
         $this->enableLayout();
 
-        $this->view->language = (string)$this->getLocale();
-        $this->language = (string)$this->getLocale();
+        $this->view->language = (string) $this->getLocale();
+        $this->language = (string) $this->getLocale();
     }
 }

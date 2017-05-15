@@ -240,12 +240,3 @@ abstract class AbstractFileService
         return $document->save();
     }
 }
-
-class FileType
-{
-    const FILE_TYPE_ARCHIVE = "archive";
-    const FILE_TYPE_AUDIO = "audio";
-    const FILE_TYPE_DOCUMENT = "document";
-    const FILE_TYPE_IMAGE = "image";
-    const FILE_TYPE_VIDEO = "video";
-}
