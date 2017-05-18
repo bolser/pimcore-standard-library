@@ -14,9 +14,8 @@
  * @license    https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
  */
 
-namespace Website\Repository;
+namespace Bolser\Pimcore\Repository;
 
-use Bolser\Pimcore\Repository\AbstractRepository;
 use Elastica\Client;
 use Elastica\Index;
 use Elastica\Query;

@@ -14,7 +14,7 @@
  * @license    https://creativecommons.org/licenses/by-nc-nd/4.0/legalcode
  */
 
-namespace Website\Transformer;
+namespace Bolser\Pimcore\Transformer;
 
 use Elastica\Result;
 
