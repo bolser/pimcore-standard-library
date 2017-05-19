@@ -14,6 +14,7 @@
 namespace Bolser\Pimcore\Repository;
 
 use Pimcore\Model\Object\Concrete;
+use Zend_Db_Expr;
 
 /**
  * Class AbstractRepository
@@ -89,6 +90,24 @@ abstract class AbstractRepository
             ->from($this->tableName)
             ->order([$orderKey . ' ' . $order])
             ->where('o_published = ?', 1);
+
+        return $this->transformMultiple($this->dao->db->fetchAll($query));
+    }
+
+    /**
+     * Gets data from the database randomly
+     *
+     * @param int $count The total amount to get
+     *
+     * @return array
+     */
+    public function getRandom(int $count = 10)
+    {
+        $query = $this->dao->db->select()
+            ->from($this->tableName)
+            ->order([new Zend_Db_Expr("RAND()")])
+            ->where('o_published = ?', 1)
+            ->limit($count);
 
         return $this->transformMultiple($this->dao->db->fetchAll($query));
     }
