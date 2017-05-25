@@ -21,7 +21,7 @@ use Elastica\Result;
 /**
  * Class AbstractTransformer
  *
- * @package Website\Transformer
+ * @package Bolser\Pimcore\Transformer
  */
 abstract class AbstractTransformer
 {
@@ -32,13 +32,13 @@ abstract class AbstractTransformer
      *
      * @return array
      */
-    public function transform(array $input): array
+    protected function transform(array $input): array
     {
         $output = [];
 
         /** @var Result $item */
         foreach ($input as $item) {
-            $output[] = call_user_func($this->getClassDefinition() . '::getById', intval($item->getId()));
+            $output[] = $this->userFuncGetById(intval($item->getId()));
         }
 
         return $output;
@@ -51,13 +51,25 @@ abstract class AbstractTransformer
      *
      * @return array
      */
-    public function randomiseArray(array $input): array
+    protected function randomiseArray(array $input): array
     {
         // Shuffle the Array
         shuffle($input);
 
         // Return the shuffled array
         return $input;
+    }
+
+    /**
+     * Uses call_user_function to get a Model by it's ID
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    protected function userFuncGetById(int $id)
+    {
+        return call_user_func($this->getClassDefinition() . '::getById', $id);
     }
 
     /**

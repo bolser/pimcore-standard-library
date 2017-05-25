@@ -132,7 +132,7 @@ abstract class AbstractRepository
         $output = [];
 
         foreach ($input as $item) {
-            $output[] = call_user_func($this->getClassDefinition() . '::getById', intval($item['oo_id']));
+            $output[] = $this->userFuncGetById(intval($item['oo_id']));
         }
 
         return $output;
@@ -155,7 +155,19 @@ abstract class AbstractRepository
             return [];
         }
 
-        return call_user_func($this->getClassDefinition() . '::getById', intval($input['oo_id']));
+        return $this->userFuncGetById(intval($input['oo_id']));
+    }
+
+    /**
+     * Uses call_user_function to get a Model by it's ID
+     *
+     * @param int $id
+     *
+     * @return mixed
+     */
+    protected function userFuncGetById(int $id)
+    {
+        return call_user_func($this->getClassDefinition() . '::getById', $id);
     }
 
     /**
