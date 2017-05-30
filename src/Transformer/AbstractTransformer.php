@@ -32,7 +32,7 @@ abstract class AbstractTransformer
      *
      * @return array
      */
-    protected function transform(array $input): array
+    public function transform(array $input): array
     {
         $output = [];
 
@@ -51,7 +51,7 @@ abstract class AbstractTransformer
      *
      * @return array
      */
-    protected function randomiseArray(array $input): array
+    public function randomiseArray(array $input): array
     {
         // Shuffle the Array
         shuffle($input);
@@ -67,7 +67,7 @@ abstract class AbstractTransformer
      *
      * @return mixed
      */
-    protected function userFuncGetById(int $id)
+    public function userFuncGetById(int $id)
     {
         return call_user_func($this->getClassDefinition() . '::getById', $id);
     }
