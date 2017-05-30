@@ -65,7 +65,7 @@ abstract class AbstractElasticaRepository extends AbstractRepository
      *
      * @param Query $query
      *
-     * @return bool|array
+     * @return array
      */
     protected function generateResults(Query $query)
     {
@@ -76,7 +76,7 @@ abstract class AbstractElasticaRepository extends AbstractRepository
         } catch (Exception $e) {
             Simple::log($this->getLogName(), $e->getMessage());
 
-            return false;
+            return [];
         }
 
         // Make sure we have some results to return before doing so.
@@ -88,6 +88,6 @@ abstract class AbstractElasticaRepository extends AbstractRepository
         $message = sprintf("The elasticsearch query: '%s' did not return any results.", $query->toArray());
         Simple::log($this->getLogName(), $message);
 
-        return false;
+        return [];
     }
 }

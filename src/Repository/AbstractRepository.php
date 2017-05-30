@@ -119,9 +119,9 @@ abstract class AbstractRepository
      *
      * @return array
      */
-    protected function transformMultiple(array $input): array
+    protected function transformMultiple($input): array
     {
-        if (empty($input)) {
+        if (empty($input) || is_bool($input)) {
             return [];
         }
 
@@ -145,9 +145,9 @@ abstract class AbstractRepository
      *
      * @return array
      */
-    protected function transformSingular(array $input)
+    protected function transformSingular($input)
     {
-        if (empty($input)) {
+        if (empty($input) || is_bool($input)) {
             return [];
         }
 
